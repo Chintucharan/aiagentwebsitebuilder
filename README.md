@@ -1,228 +1,259 @@
-# Website Builder
+<div align="center">
 
-An AI-powered website builder using CrewAI that creates complete websites with multiple specialized agents working together. This tool leverages the power of AI to generate professional websites based on your requirements, powered by Google's Gemini API for advanced AI capabilities.
+# 🤖 AI Agent Website Builder
 
-## 🌟 Features
+### A team of specialized AI agents that researches, designs, and codes a complete website from a single topic.
 
-- 🤖 Automated website creation using AI agents
-- 👥 Specialized agents for research, HTML, CSS, and JavaScript
-- ⚙️ Configuration-based agent and task management
-- 🛡️ Robust error handling and validation
-- 📁 File management utilities
-- 📝 Type-safe codebase
-- 🔄 Training and replay capabilities
-- 🧪 Comprehensive testing suite
-- 🤖 Powered by Google Gemini API for advanced AI capabilities
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![CrewAI](https://img.shields.io/badge/CrewAI-Multi--Agent-FF5A50)](https://www.crewai.com/)
+[![Google Gemini](https://img.shields.io/badge/Google-Gemini_API-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
+[![Serper](https://img.shields.io/badge/Serper-Web_Search-1F2937)](https://serper.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#-license)
+
+[Features](#-features) · [How It Works](#-how-it-works) · [Quick Start](#-quick-start) · [Usage](#-usage) · [Configuration](#-configuration) · [FAQ](#-faq) · [Author](#-author)
+
+</div>
+
+---
+
+## 📖 Overview
+
+**AI Agent Website Builder** uses [CrewAI](https://www.crewai.com/) to coordinate multiple specialized agents that work together like a small web team. Give it a topic, and the crew researches it, then writes the HTML, CSS, and JavaScript for a complete website. The language model behind the agents is **Google Gemini**, and web research is powered by **Serper**.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+| --- | --- |
+| 🤝 **Multi-Agent Collaboration** | Specialized agents for research, HTML, CSS, and JavaScript work together on one site. |
+| 🔎 **Web Research** | Agents search the web (Serper) to ground the content in real information. |
+| ⚙️ **Config-Driven Agents & Tasks** | Agent roles and task definitions live in configuration files, so behavior is easy to tune without touching code. |
+| 📁 **File Management Utilities** | Generated pages are written to the `output/` folder. |
+| 🛡️ **Validation & Error Handling** | Inputs and agent outputs are validated to fail clearly instead of silently. |
+| 🔄 **Train & Replay** | Train the crew over several iterations and replay individual tasks. |
+| 🧪 **Dev Tooling** | Black, isort, mypy, flake8, and pytest are set up for development. |
+
+---
+
+## 🧠 How It Works
+
+```mermaid
+flowchart LR
+  U([Website topic]) --> C{{CrewAI Crew}}
+  C --> R[Research Agent]
+  C --> H[HTML Agent]
+  C --> S[CSS Agent]
+  C --> J[JavaScript Agent]
+  R -.->|Serper search| W[(Web)]
+  R & H & S & J -.->|LLM calls| G[Google Gemini]
+  H & S & J --> O[/output/<br/>Generated website/]
+```
+
+1. You provide a **topic** for the website.
+2. The **crew** assigns work to specialized agents, each driven by its configuration.
+3. The **research agent** gathers information from the web.
+4. The **HTML, CSS, and JavaScript agents** build the site's structure, styling, and behavior.
+5. The finished files are saved to **`output/`**, ready to open in a browser.
+
+---
+
+## 📁 Project Structure
+
+```text
+aiagentwebsitebuilder/
+├── db/                          # Database files
+└── website_builder/             # CrewAI project
+    ├── src/
+    │   └── website_builder/
+    │       ├── config/          # Agent and task configuration
+    │       ├── tools/           # Custom tools
+    │       ├── utils/           # Utility functions
+    │       ├── crew.py          # CrewAI crew definition
+    │       └── main.py          # Entry point (run / train / replay / test)
+    ├── knowledge/               # Knowledge base
+    ├── tests/                   # Test suite
+    └── output/                  # Generated websites
+```
+
+---
 
 ## 📋 Prerequisites
 
-- Python 3.8 or higher
-- Serper API key (for web search capabilities)
-- Google Gemini API key
+- **Python 3.10+**
+- A **Google Gemini API key** — see [Getting a Gemini API key](#-getting-a-gemini-api-key)
+- A **Serper API key** — create one at [serper.dev](https://serper.dev/)
+
+---
 
 ## 🚀 Quick Start
 
-1. **Clone the repository:**
+### 1. Clone the repository
+
 ```bash
-git clone https://github.com/yourusername/website_builder.git
-cd website_builder
+git clone https://github.com/Chintucharan/aiagentwebsitebuilder.git
+cd aiagentwebsitebuilder/website_builder
 ```
 
-2. **Set up your environment:**
+### 2. Create a virtual environment
+
 ```bash
-# Create virtual environment
 python -m venv .venv
 
-# Activate virtual environment
-# On Windows:
+# Windows
 .venv\Scripts\activate
-# On Unix or MacOS:
+
+# macOS / Linux
 source .venv/bin/activate
 ```
 
-3. **Install the package:**
+### 3. Install the package
+
 ```bash
-# For basic usage
+# Basic usage
 pip install -e .
 
-# For development
+# Development (adds the code-quality and testing tools)
 pip install -e ".[dev]"
 ```
 
-4. **Configure your environment:**
-Create a `.env` file in the project root with your API keys:
+### 4. Add your API keys
+
+Create a `.env` file in the project root:
+
 ```env
-MODEL=gemini/gemini-1.5-pro-latest
+MODEL=gemini/<gemini-model-id>
 GOOGLE_GEMINI_API_KEY=your_gemini_api_key
 SERPER_API_KEY=your_serper_api_key
 ```
 
-## 🔑 Setting up Google Gemini API
+Replace `<gemini-model-id>` with a currently supported model from [Google's model list](https://ai.google.dev/gemini-api/docs/models).
 
-1. **Create a Google Cloud Project:**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-   - Enable the Gemini API for your project
-
-2. **Get Your API Key:**
-   - In the Google Cloud Console, go to "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "API Key"
-   - Copy your API key and add it to your `.env` file
-
-3. **Set Up Billing:**
-   - Go to "Billing" in the Google Cloud Console
-   - Link your project to a billing account
-   - Note: Gemini API has a free tier with generous limits
-
-4. **Security Best Practices:**
-   - Restrict your API key to specific IP addresses
-   - Set up API key quotas
-   - Never commit your API key to version control
+---
 
 ## 💻 Usage
 
-### Basic Website Creation
+Run all commands from the `website_builder/` project folder.
+
+### Create a website
+
 ```bash
-# Create a new website
 python -m website_builder.main run "Your Website Topic"
 ```
 
-### Advanced Features
+Open the generated files from the `output/` folder in your browser.
 
-1. **Train the Crew:**
+### Train the crew
+
 ```bash
 python -m website_builder.main train 10 training_session.json "Your Website Topic"
 ```
 
-2. **Replay a Task:**
+Arguments: number of iterations, output file name, topic.
+
+### Replay a task
+
 ```bash
 python -m website_builder.main replay "task_id"
 ```
 
-3. **Test the Crew:**
+### Test the crew
+
 ```bash
-python -m website_builder.main test 5 "gpt-4" "Your Website Topic"
+python -m website_builder.main test 5 "<model-name>" "Your Website Topic"
 ```
 
-## 🏗️ Project Structure
+Arguments: number of iterations, model to evaluate with, topic.
 
-```
-website_builder/
-├── src/
-│   └── website_builder/
-│       ├── config/          # Configuration files
-│       ├── utils/           # Utility functions
-│       ├── tools/           # Custom tools
-│       ├── main.py          # Main entry point
-│       └── crew.py          # CrewAI implementation
-├── tests/                   # Test suite
-├── knowledge/              # Knowledge base
-├── output/                 # Generated websites
-└── db/                     # Database files
-```
+---
+
+## ⚙️ Configuration
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `MODEL` | ✅ | LLM used by the agents, in `provider/model` format (e.g. `gemini/...`). |
+| `GOOGLE_GEMINI_API_KEY` | ✅ | Your Google Gemini API key. |
+| `SERPER_API_KEY` | ✅ | Your Serper key for web search. |
+
+Agent roles and task prompts are defined in `src/website_builder/config/`. Edit those files to change how the agents behave.
+
+> ⚠️ **Never commit your `.env` file.** Keep API keys out of version control, and use API key restrictions and quotas in Google Cloud.
+
+### 🔑 Getting a Gemini API key
+
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) and create or select a project.
+2. Enable the **Gemini API** for that project.
+3. Go to **APIs & Services → Credentials → Create Credentials → API Key**.
+4. Copy the key into your `.env` file.
+5. Optionally restrict the key and set quotas.
+
+---
 
 ## 🛠️ Development
 
-### Code Quality Tools
-
 ```bash
-# Format code
-black .
-isort .
-
-# Type checking
-mypy .
-
-# Linting
-flake8
-
-# Run tests
-pytest
+black .        # format code
+isort .        # sort imports
+mypy .         # type checking
+flake8         # linting
+pytest         # run tests
 ```
 
-## ❓ Frequently Asked Questions
+---
 
-### Q: What is CrewAI and how does it work in this project?
-A: CrewAI is a framework that allows multiple AI agents to work together. In this project, we use specialized agents for different aspects of website creation (research, design, coding) that collaborate to build complete websites.
+## ❓ FAQ
 
-### Q: What kind of websites can this builder create?
-A: The builder can create various types of websites including:
-- Business websites
-- Portfolio sites
-- Landing pages
-- Blog websites
-- E-commerce sites (basic structure)
+**What is CrewAI, and how is it used here?**
+CrewAI is a framework for coordinating multiple AI agents. Here it organizes the research, HTML, CSS, and JavaScript agents into one crew that builds a site together.
 
-### Q: Do I need to know coding to use this tool?
-A: No, you don't need coding knowledge. The tool is designed to generate complete websites based on your topic description. However, having basic understanding of HTML/CSS can help you customize the output.
+**What kinds of websites can it create?**
+Anything you can describe as a topic: portfolios, landing pages, blogs, and business sites. Output quality depends on the model and on how specific your topic is.
 
-### Q: How long does it take to generate a website?
-A: The generation time varies based on:
-- Website complexity
-- Number of pages
-- Features requested
-- API response times
-Typically, a basic website can be generated in 5-10 minutes.
+**Do I need to know how to code?**
+No. You provide a topic and get working files back. Basic HTML/CSS knowledge helps if you want to customize the result.
 
-### Q: Can I customize the generated websites?
-A: Yes, you can customize the generated websites by:
-- Modifying the configuration files
-- Adjusting agent behaviors
-- Editing the output files directly
-- Using the replay feature to modify specific tasks
+**Can I customize the output?**
+Yes. Edit the agent and task configuration, edit the generated files in `output/` directly, or use `replay` to re-run a specific task.
 
-### Q: What are the system requirements?
-A: The minimum requirements are:
-- Python 3.8+
-- 4GB RAM
-- 1GB free disk space
-- Internet connection for API access
+**Does it cost money to run?**
+The Gemini API and Serper both have free tiers, but limits and pricing change, so check each provider's current pricing page.
 
-### Q: What is Google Gemini API and how is it used in this project?
-A: Google Gemini API is a powerful AI model that provides advanced language understanding and generation capabilities. In this project, we use Gemini API for:
-- Enhanced content generation
-- Improved code understanding
-- Better context management
-- Advanced reasoning capabilities
-
-### Q: How do I get started with Google Gemini API?
-A: Follow these steps:
-1. Visit the [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the Gemini API
-4. Create API credentials
-5. Add your API key to the `.env` file
-
-### Q: What are the costs associated with Google Gemini API?
-A: Google Gemini API offers:
-- A generous free tier
-- Pay-as-you-go pricing
-- Different model tiers (Pro, Ultra) with varying costs
-- Visit [Google Cloud Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) for detailed information
+---
 
 ## 🤝 Contributing
 
+Contributions, issues, and feature requests are welcome.
+
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "Add your feature"`
+4. Push the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
-## 📞 Support
-
-For support, please:
-1. Check the FAQ section
-2. Review existing issues
-3. Create a new issue if needed
-4. Contact the maintainers
+---
 
 ## 🙏 Acknowledgments
 
-- CrewAI team for the amazing framework
-- OpenAI for GPT models
-- Google Cloud and Gemini API team for advanced AI capabilities
-- Saptaparni Pal for her contributions in this project(crew.py)
+- The [CrewAI](https://www.crewai.com/) team for the multi-agent framework
+- Google Cloud and the Gemini API team
+
+---
+
+## 👤 Author
+
+**Gowni Venkat Charan** — B.Tech CSE, Madanapalle Institute of Technology and Science (MITS)
+
+[![GitHub](https://img.shields.io/badge/GitHub-Chintucharan-181717?logo=github&logoColor=white)](https://github.com/Chintucharan)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Gowni_Venkat_Charan-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gowni-venkat-charan-1b06562a8/)
+
+<div align="center">
+
+⭐ If you found this project useful, consider giving it a star!
+
+</div>
